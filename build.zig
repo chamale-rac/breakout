@@ -16,6 +16,11 @@ pub fn build(b: *std.Build) !void {
             .optimize = optimize,
         });
 
+        // Add engine module
+        const engine_module = b.addModule("engine", .{
+            .source_file = b.path("src/engine/mod.zig"),
+        });
+
         // Add raylib-zig dependency
         const raylib_dep = b.dependency("raylib_zig", .{
             .target = target,
@@ -29,6 +34,7 @@ pub fn build(b: *std.Build) !void {
         // Add raylib modules to the executable
         exe.root_module.addImport("raylib", raylib);
         exe.root_module.addImport("raygui", raygui);
+        exe.root_module.addImport("engine", engine_module);
 
         // Link the raylib C library
         exe.linkLibrary(raylib_artifact);
