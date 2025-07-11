@@ -71,13 +71,13 @@ pub const Ball = struct {
 
             // Ensure minimum velocity
             const min_velocity = 100.0;
-            if (@fabs(self.velocity.x) < min_velocity) {
+            if (@abs(self.velocity.x) < min_velocity) {
                 self.velocity.x = if (self.velocity.x > 0) min_velocity else -min_velocity;
             }
 
             // Clamp maximum velocity
             const max_velocity = 300.0;
-            if (@fabs(self.velocity.x) > max_velocity) {
+            if (@abs(self.velocity.x) > max_velocity) {
                 self.velocity.x = if (self.velocity.x > 0) max_velocity else -max_velocity;
             }
         }
