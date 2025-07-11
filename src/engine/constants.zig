@@ -2,6 +2,8 @@
 //! This module contains all the magic numbers and configuration
 //! that would otherwise be hardcoded throughout the application.
 
+const raylib = @import("raylib");
+
 pub const GameConfig = struct {
     // Window settings
     pub const WINDOW_TITLE = "Breakout Game";
@@ -22,14 +24,12 @@ pub const GameConfig = struct {
     pub const PADDLE_SPEED: f32 = 200.0;
     pub const PADDLE_BOTTOM_MARGIN: f32 = 15.0; // Distance from bottom of screen
 
-    // Colors
-    pub const BACKGROUND_COLOR = .{ .r = 128, .g = 128, .b = 128, .a = 255 }; // Gray
-    pub const BALL_COLOR = .{ .r = 0, .g = 0, .b = 0, .a = 255 }; // Black
-    pub const PADDLE_COLOR = .{ .r = 0, .g = 0, .b = 0, .a = 255 }; // Black
-    pub const FPS_TEXT_COLOR = .{ .r = 255, .g = 0, .b = 0, .a = 255 }; // Red
+    // Colors - using Raylib's predefined colors
+    pub const BACKGROUND_COLOR = raylib.GRAY;
+    pub const BALL_COLOR = raylib.BLACK;
+    pub const PADDLE_COLOR = raylib.BLACK;
 
     // UI settings
-    pub const FPS_TEXT_SIZE: i32 = 20;
     pub const FPS_TEXT_X: i32 = 10;
     pub const FPS_TEXT_Y: i32 = 40;
 };

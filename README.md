@@ -59,7 +59,7 @@ pub const GameConfig = struct {
 ```
 
 ### Type Safety
-Strong typing with custom enums and structs:
+Strong typing with game-specific enums and Raylib's built-in types:
 ```zig
 pub const GameState = enum {
     Playing,
@@ -68,11 +68,7 @@ pub const GameState = enum {
     Victory,
 };
 
-pub const Vector2 = struct {
-    x: f32,
-    y: f32,
-    // ... methods
-};
+// Uses raylib.Vector2 and raylib.Rectangle directly
 ```
 
 ### Input System
@@ -88,12 +84,12 @@ pub const InputAction = enum {
 ```
 
 ### Physics System
-Comprehensive collision detection and physics utilities:
+Comprehensive collision detection and physics utilities using Raylib's built-in functions:
 ```zig
 pub const PhysicsSystem = struct {
-    pub fn checkCollision(rect1: Rectangle, rect2: Rectangle) bool { ... }
-    pub fn reflectVelocity(velocity: Vector2, normal: Vector2) Vector2 { ... }
-    // ... more physics functions
+    pub fn checkCollision(rect1: raylib.Rectangle, rect2: raylib.Rectangle) bool { ... }
+    pub fn reflectVelocity(velocity: raylib.Vector2, normal: raylib.Vector2) raylib.Vector2 { ... }
+    // ... more physics functions using raymath
 };
 ```
 
@@ -101,8 +97,8 @@ pub const PhysicsSystem = struct {
 Encapsulated game entities with clear interfaces:
 ```zig
 pub const Ball = struct {
-    bounds: Rectangle,
-    velocity: Vector2,
+    bounds: raylib.Rectangle,
+    velocity: raylib.Vector2,
     is_active: bool,
     // ... methods for behavior
 };
@@ -173,6 +169,10 @@ The modular architecture makes it easy to add new features:
 6. **Error Handling**: Proper error handling throughout
 7. **Documentation**: Comprehensive comments and documentation
 8. **Testability**: Modules can be tested independently
+9. **No Reinvention**: Uses Raylib's existing types and functions instead of creating duplicates
+10. **Simplicity**: Focuses on organization rather than unnecessary abstractions
+11. **Raylib Integration**: Leverages Raylib's built-in functions (DrawFPS, collision detection, colors, raymath)
+12. **Minimal Wrappers**: Only creates abstractions where Raylib doesn't provide what we need
 
 ## Future Enhancements
 
@@ -187,3 +187,7 @@ The architecture is designed to easily support:
 - Level editor
 
 This modular approach ensures the codebase remains maintainable and extensible as the game grows in complexity.
+
+# References
+
+- [https://www.raylib.com/cheatsheet/raymath_cheatsheet.html](https://www.raylib.com/cheatsheet/raymath_cheatsheet.html)

@@ -98,10 +98,10 @@ pub const GameEngine = struct {
         const frame_count = self.game_state.getFrameCount();
 
         // Draw score
-        Renderer.drawTextFmt("Score: {}", .{score}, 10, 10, 20, raylib.Color.white);
+        Renderer.drawTextFmt("Score: {}", .{score}, 10, 10, 20, raylib.WHITE);
 
         // Draw lives
-        Renderer.drawTextFmt("Lives: {}", .{lives}, 10, 70, 20, raylib.Color.white);
+        Renderer.drawTextFmt("Lives: {}", .{lives}, 10, 70, 20, raylib.WHITE);
 
         // Draw debug info in debug mode
         if (self.isDebugMode()) {
@@ -124,11 +124,11 @@ pub const GameEngine = struct {
             },
             .GameOver => {
                 Renderer.drawGameState(.GameOver);
-                Renderer.drawText("Press SPACE to restart", 250, 350, 20, raylib.Color.white);
+                Renderer.drawText("Press SPACE to restart", 250, 350, 20, raylib.WHITE);
             },
             .Victory => {
                 Renderer.drawGameState(.Victory);
-                Renderer.drawText("Press SPACE to restart", 250, 350, 20, raylib.Color.white);
+                Renderer.drawText("Press SPACE to restart", 250, 350, 20, raylib.WHITE);
             },
         }
     }

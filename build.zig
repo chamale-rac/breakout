@@ -18,7 +18,7 @@ pub fn build(b: *std.Build) !void {
 
         // Add engine module
         const engine_module = b.addModule("engine", .{
-            .source_file = b.path("src/engine/mod.zig"),
+            .root_source_file = b.path("src/engine/mod.zig"),
         });
 
         // Add raylib-zig dependency
