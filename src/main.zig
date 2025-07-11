@@ -62,12 +62,27 @@ const Game = struct {
         if (raylib.windowShouldClose()) {
             self.is_running = false;
         }
-        if (raylib.isKeyDown(raylib.KeyboardKey.right)) {
-            self.paddle.x += self.paddle_sx * dT;
+
+        // Try different key detection methods
+        if (raylib.isKeyDown(raylib.KeyboardKey.left)) {
+            self.paddle.x -= self.paddle_sx * dT;
+            // Keep paddle within screen bounds
+            if (self.paddle.x < 0) self.paddle.x = 0;
+            std.debug.print("LEFT/A key pressed, paddle.x = {}\n", .{self.paddle.x});
         }
 
         if (raylib.isKeyDown(raylib.KeyboardKey.right)) {
-            self.paddle.x -= self.paddle_sx * dT;
+            self.paddle.x += self.paddle_sx * dT;
+            // Keep paddle within screen bounds
+            if (self.paddle.x + self.paddle.width > @as(f32, @floatFromInt(self.screen_width))) {
+                self.paddle.x = @as(f32, @floatFromInt(self.screen_width)) - self.paddle.width;
+            }
+            std.debug.print("RIGHT/D key pressed, paddle.x = {}\n", .{self.paddle.x});
+        }
+
+        // Debug: Check if any key is being pressed
+        if (raylib.isKeyPressed(raylib.KeyboardKey.space)) {
+            std.debug.print("SPACE key pressed!\n", .{});
         }
     }
 
@@ -100,7 +115,7 @@ const Game = struct {
 
         var buf: [50:0]u8 = undefined;
         const fps_text = std.fmt.bufPrintZ(&buf, "FPS: {}", .{raylib.getFPS()}) catch "FPS: 0";
-        raylib.drawText(fps_text, 10, 10, 20, raylib.Color{ .r = 128, .g = 128, .b = 128, .a = 255 });
+        raylib.drawText(fps_text, 10, 40, 20, raylib.Color{ .r = 255, .g = 0, .b = 0, .a = 255 });
 
         raylib.drawRectangleRec(self.ball, raylib.Color{ .r = 0, .g = 0, .b = 0, .a = 255 }); // BLACK
         raylib.drawRectangleRec(self.paddle, raylib.Color{ .r = 0, .g = 0, .b = 0, .a = 255 }); // BLACK
