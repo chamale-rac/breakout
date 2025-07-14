@@ -41,7 +41,7 @@ pub const Renderer = struct {
     }
 
     /// Draw text
-    pub fn drawText(text: [*:0]const u8, x: i32, y: i32, size: i32, color: raylib.Color) void {
+    pub fn drawText(text: [:0]const u8, x: i32, y: i32, size: i32, color: raylib.Color) void {
         raylib.drawText(text, x, y, size, color);
     }
 
@@ -62,8 +62,8 @@ pub const Renderer = struct {
         const color = switch (object_type) {
             .Ball => GameConfig.BALL_COLOR,
             .Paddle => GameConfig.PADDLE_COLOR,
-            .Brick => raylib.RED,
-            .PowerUp => raylib.GREEN,
+            .Brick => raylib.Color.red,
+            .PowerUp => raylib.Color.green,
         };
         drawRectangle(rect, color);
     }
@@ -71,9 +71,9 @@ pub const Renderer = struct {
     /// Draw debug information
     pub fn drawDebugInfo(ball_pos: raylib.Vector2, paddle_pos: raylib.Vector2, frame_count: i32) void {
         const debug_y = GameConfig.FPS_TEXT_Y + 30;
-        drawTextFmt("Ball: ({:.1}, {:.1})", .{ ball_pos.x, ball_pos.y }, 10, debug_y, 16, raylib.WHITE);
-        drawTextFmt("Paddle: ({:.1}, {:.1})", .{ paddle_pos.x, paddle_pos.y }, 10, debug_y + 20, 16, raylib.WHITE);
-        drawTextFmt("Frame: {}", .{frame_count}, 10, debug_y + 40, 16, raylib.WHITE);
+        drawTextFmt("Ball: ({:.1}, {:.1})", .{ ball_pos.x, ball_pos.y }, 10, debug_y, 16, raylib.Color.white);
+        drawTextFmt("Paddle: ({:.1}, {:.1})", .{ paddle_pos.x, paddle_pos.y }, 10, debug_y + 20, 16, raylib.Color.white);
+        drawTextFmt("Frame: {}", .{frame_count}, 10, debug_y + 40, 16, raylib.Color.white);
     }
 
     /// Draw game state information
@@ -88,12 +88,12 @@ pub const Renderer = struct {
         const screen_center_x = @divTrunc(GameConfig.WINDOW_WIDTH, 2);
         const screen_center_y = @divTrunc(GameConfig.WINDOW_HEIGHT, 2);
 
-        drawText(state_text, screen_center_x - 50, screen_center_y, 32, raylib.WHITE);
+        drawText(state_text, screen_center_x - 50, screen_center_y, 32, raylib.Color.white);
     }
 
     /// Draw a border around the screen
     pub fn drawBorder() void {
         const border_rect = raylib.Rectangle{ .x = 0, .y = 0, .width = @as(f32, @floatFromInt(GameConfig.WINDOW_WIDTH)), .height = @as(f32, @floatFromInt(GameConfig.WINDOW_HEIGHT)) };
-        raylib.drawRectangleLinesEx(border_rect, 2, raylib.WHITE);
+        raylib.drawRectangleLinesEx(border_rect, 2, raylib.Color.white);
     }
 };

@@ -2,8 +2,8 @@
 //! This module defines the core game objects with their properties
 //! and behaviors.
 
-const raylib = @import("raylib");
-const raymath = raylib.math;
+const rl = @import("raylib");
+const raymath = rl.math;
 const types = @import("types.zig");
 const constants = @import("constants.zig");
 const GameConfig = constants.GameConfig;
@@ -12,14 +12,14 @@ const PhysicsSystem = physics.PhysicsSystem;
 
 /// Ball game object
 pub const Ball = struct {
-    bounds: raylib.Rectangle,
-    velocity: raylib.Vector2,
+    bounds: rl.Rectangle,
+    velocity: rl.Vector2,
     is_active: bool,
 
     pub fn init(x: f32, y: f32) Ball {
         return Ball{
-            .bounds = raylib.Rectangle{ .x = x, .y = y, .width = GameConfig.BALL_SIZE, .height = GameConfig.BALL_SIZE },
-            .velocity = raylib.Vector2{ .x = GameConfig.BALL_SPEED_X, .y = GameConfig.BALL_SPEED_Y },
+            .bounds = rl.Rectangle{ .x = x, .y = y, .width = GameConfig.BALL_SIZE, .height = GameConfig.BALL_SIZE },
+            .velocity = rl.Vector2{ .x = GameConfig.BALL_SPEED_X, .y = GameConfig.BALL_SPEED_Y },
             .is_active = true,
         };
     }
@@ -28,7 +28,7 @@ pub const Ball = struct {
         if (!self.is_active) return;
 
         // Update position using raymath
-        const movement = raymath.Vector2Scale(self.velocity, delta_time);
+        const movement = raymath.vector2Scale(self.velocity, delta_time);
         self.bounds.x += movement.x;
         self.bounds.y += movement.y;
 
@@ -62,8 +62,8 @@ pub const Ball = struct {
             self.velocity.y *= -1;
 
             // Adjust horizontal velocity based on where the ball hit the paddle
-            const ball_center = raymath.Vector2Add(raylib.Vector2{ .x = self.bounds.x, .y = self.bounds.y }, raymath.Vector2Scale(raylib.Vector2{ .x = self.bounds.width, .y = self.bounds.height }, 0.5));
-            const paddle_center = raymath.Vector2Add(raylib.Vector2{ .x = paddle.bounds.x, .y = paddle.bounds.y }, raymath.Vector2Scale(raylib.Vector2{ .x = paddle.bounds.width, .y = paddle.bounds.height }, 0.5));
+            const ball_center = raymath.vector2Add(rl.Vector2{ .x = self.bounds.x, .y = self.bounds.y }, raymath.vector2Scale(rl.Vector2{ .x = self.bounds.width, .y = self.bounds.height }, 0.5));
+            const paddle_center = raymath.vector2Add(rl.Vector2{ .x = paddle.bounds.x, .y = paddle.bounds.y }, raymath.vector2Scale(rl.Vector2{ .x = paddle.bounds.width, .y = paddle.bounds.height }, 0.5));
             const hit_position = (ball_center.x - paddle_center.x) / (paddle.bounds.width / 2);
 
             // Add some horizontal velocity based on hit position
@@ -86,23 +86,23 @@ pub const Ball = struct {
     pub fn reset(self: *Ball, x: f32, y: f32) void {
         self.bounds.x = x;
         self.bounds.y = y;
-        self.velocity = raylib.Vector2{ .x = GameConfig.BALL_SPEED_X, .y = GameConfig.BALL_SPEED_Y };
+        self.velocity = rl.Vector2{ .x = GameConfig.BALL_SPEED_X, .y = GameConfig.BALL_SPEED_Y };
         self.is_active = true;
     }
 
-    pub fn getPosition(self: Ball) raylib.Vector2 {
-        return raymath.Vector2Add(raylib.Vector2{ .x = self.bounds.x, .y = self.bounds.y }, raymath.Vector2Scale(raylib.Vector2{ .x = self.bounds.width, .y = self.bounds.height }, 0.5));
+    pub fn getPosition(self: Ball) rl.Vector2 {
+        return raymath.vector2Add(rl.Vector2{ .x = self.bounds.x, .y = self.bounds.y }, raymath.vector2Scale(rl.Vector2{ .x = self.bounds.width, .y = self.bounds.height }, 0.5));
     }
 
-    pub fn getBounds(self: Ball) raylib.Rectangle {
+    pub fn getBounds(self: Ball) rl.Rectangle {
         return self.bounds;
     }
 };
 
 /// Paddle game object
 pub const Paddle = struct {
-    bounds: raylib.Rectangle,
-    velocity: raylib.Vector2,
+    bounds: rl.Rectangle,
+    velocity: rl.Vector2,
     speed: f32,
 
     pub fn init(screen_width: f32, screen_height: f32) Paddle {
@@ -111,15 +111,15 @@ pub const Paddle = struct {
         const paddle_y = screen_height - GameConfig.PADDLE_BOTTOM_MARGIN - GameConfig.PADDLE_HEIGHT;
 
         return Paddle{
-            .bounds = raylib.Rectangle{ .x = paddle_x, .y = paddle_y, .width = paddle_width, .height = GameConfig.PADDLE_HEIGHT },
-            .velocity = raylib.Vector2{ .x = 0, .y = 0 },
+            .bounds = rl.Rectangle{ .x = paddle_x, .y = paddle_y, .width = paddle_width, .height = GameConfig.PADDLE_HEIGHT },
+            .velocity = rl.Vector2{ .x = 0, .y = 0 },
             .speed = GameConfig.PADDLE_SPEED,
         };
     }
 
     pub fn update(self: *Paddle, delta_time: f32, screen_width: f32, screen_height: f32) void {
         // Update position based on velocity using raymath
-        const movement = raymath.Vector2Scale(self.velocity, delta_time);
+        const movement = raymath.vector2Scale(self.velocity, delta_time);
         self.bounds.x += movement.x;
         self.bounds.y += movement.y;
 
@@ -131,11 +131,11 @@ pub const Paddle = struct {
         self.velocity.x = @as(f32, @floatFromInt(horizontal_input)) * self.speed;
     }
 
-    pub fn getPosition(self: Paddle) raylib.Vector2 {
-        return raymath.Vector2Add(raylib.Vector2{ .x = self.bounds.x, .y = self.bounds.y }, raymath.Vector2Scale(raylib.Vector2{ .x = self.bounds.width, .y = self.bounds.height }, 0.5));
+    pub fn getPosition(self: Paddle) rl.Vector2 {
+        return raymath.vector2Add(rl.Vector2{ .x = self.bounds.x, .y = self.bounds.y }, raymath.vector2Scale(rl.Vector2{ .x = self.bounds.width, .y = self.bounds.height }, 0.5));
     }
 
-    pub fn getBounds(self: Paddle) raylib.Rectangle {
+    pub fn getBounds(self: Paddle) rl.Rectangle {
         return self.bounds;
     }
 

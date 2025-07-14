@@ -25,9 +25,9 @@ pub const GameConfig = struct {
     pub const PADDLE_BOTTOM_MARGIN: f32 = 15.0; // Distance from bottom of screen
 
     // Colors - using Raylib's predefined colors
-    pub const BACKGROUND_COLOR = raylib.GRAY;
-    pub const BALL_COLOR = raylib.BLACK;
-    pub const PADDLE_COLOR = raylib.BLACK;
+    pub const BACKGROUND_COLOR = raylib.Color.gray;
+    pub const BALL_COLOR = raylib.Color.black;
+    pub const PADDLE_COLOR = raylib.Color.black;
 
     // UI settings
     pub const FPS_TEXT_X: i32 = 10;

@@ -23,9 +23,9 @@ pub const PhysicsSystem = struct {
         }
 
         // Calculate collision side and normal using raymath
-        const center1 = raymath.Vector2Add(raylib.Vector2{ .x = rect1.x, .y = rect1.y }, raymath.Vector2Scale(raylib.Vector2{ .x = rect1.width, .y = rect1.height }, 0.5));
-        const center2 = raymath.Vector2Add(raylib.Vector2{ .x = rect2.x, .y = rect2.y }, raymath.Vector2Scale(raylib.Vector2{ .x = rect2.width, .y = rect2.height }, 0.5));
-        const diff = raymath.Vector2Subtract(center2, center1);
+        const center1 = raymath.vector2Add(raylib.Vector2{ .x = rect1.x, .y = rect1.y }, raymath.vector2Scale(raylib.Vector2{ .x = rect1.width, .y = rect1.height }, 0.5));
+        const center2 = raymath.vector2Add(raylib.Vector2{ .x = rect2.x, .y = rect2.y }, raymath.vector2Scale(raylib.Vector2{ .x = rect2.width, .y = rect2.height }, 0.5));
+        const diff = raymath.vector2Subtract(center2, center1);
 
         // Determine collision side based on overlap
         const overlap_x = @min(rect1.x + rect1.width, rect2.x + rect2.width) - @max(rect1.x, rect2.x);
@@ -90,16 +90,16 @@ pub const PhysicsSystem = struct {
 
     /// Get the distance between two points using raymath
     pub fn getDistance(point1: raylib.Vector2, point2: raylib.Vector2) f32 {
-        return raymath.Vector2Distance(point1, point2);
+        return raymath.vector2Distance(point1, point2);
     }
 
     /// Reflect a velocity vector off a surface normal using raymath
     pub fn reflectVelocity(velocity: raylib.Vector2, normal: raylib.Vector2) raylib.Vector2 {
-        return raymath.Vector2Reflect(velocity, normal);
+        return raymath.vector2Reflect(velocity, normal);
     }
 
     /// Apply friction to a velocity vector
     pub fn applyFriction(velocity: raylib.Vector2, friction: f32) raylib.Vector2 {
-        return raymath.Vector2Scale(velocity, 1.0 - friction);
+        return raymath.vector2Scale(velocity, 1.0 - friction);
     }
 };

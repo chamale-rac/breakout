@@ -49,12 +49,12 @@ pub const CollisionSide = enum {
 
 /// Represents a collision between two objects
 pub const Collision = struct {
-    type: CollisionType,
+    ctype: CollisionType,
     side: CollisionSide,
     position: raylib.Vector2,
     normal: raylib.Vector2,
 
-    pub fn init(type: CollisionType, side: CollisionSide, position: raylib.Vector2, normal: raylib.Vector2) Collision {
-        return Collision{ .type = type, .side = side, .position = position, .normal = normal };
+    pub fn init(ctype: CollisionType, side: CollisionSide, position: raylib.Vector2, normal: raylib.Vector2) Collision {
+        return Collision{ .ctype = ctype, .side = side, .position = position, .normal = normal };
     }
 };

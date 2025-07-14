@@ -77,9 +77,9 @@ pub const InputSystem = struct {
         return 0;
     }
 
-    /// Get the vertical input value (-1 for up, 0 for none, 1 for down)
-    pub fn getVerticalInput(self: InputSystem) i32 {
-        // Currently no vertical input, but ready for future expansion
-        return 0;
-    }
+    // Get the vertical input value (-1 for up, 0 for none, 1 for down)
+    // pub fn getVerticalInput(self: InputSystem) i32 {
+    //     // Currently no vertical input, but ready for future expansion
+    //     return 0;
+    // }
 };
