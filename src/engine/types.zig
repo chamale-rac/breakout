@@ -26,6 +26,7 @@ pub const InputAction = enum {
     Pause,
     Resume,
     Quit,
+    Restart,
 };
 
 /// Represents collision types

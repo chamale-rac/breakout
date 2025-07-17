@@ -22,6 +22,7 @@ pub const InputSystem = struct {
         move_right_pressed: bool = false,
         pause_pressed: bool = false,
         quit_pressed: bool = false,
+        restart_pressed: bool = false,
     };
 
     state: InputState,
@@ -36,6 +37,7 @@ pub const InputSystem = struct {
         self.state.move_right_pressed = raylib.isKeyDown(KeyMapping.MOVE_RIGHT);
         self.state.pause_pressed = raylib.isKeyPressed(KeyMapping.PAUSE);
         self.state.quit_pressed = raylib.isKeyPressed(KeyMapping.QUIT);
+        self.state.restart_pressed = raylib.isKeyPressed(raylib.KeyboardKey.r);
     }
 
     /// Check if the window should close
@@ -51,6 +53,7 @@ pub const InputSystem = struct {
             .Pause => self.state.pause_pressed,
             .Resume => self.state.pause_pressed, // Same key for pause/resume
             .Quit => self.state.quit_pressed,
+            .Restart => self.state.restart_pressed,
         };
     }
 
@@ -62,6 +65,7 @@ pub const InputSystem = struct {
             .Pause => self.state.pause_pressed,
             .Resume => self.state.pause_pressed,
             .Quit => self.state.quit_pressed,
+            .Restart => self.state.restart_pressed,
         };
     }
 

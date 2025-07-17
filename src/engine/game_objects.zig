@@ -147,3 +147,37 @@ pub const Paddle = struct {
         return self.speed;
     }
 };
+
+/// Block game object
+pub const Block = struct {
+    bounds: rl.Rectangle,
+    is_active: bool,
+
+    pub fn init(x: f32, y: f32, width: f32, height: f32) Block {
+        return Block{
+            .bounds = rl.Rectangle{ .x = x, .y = y, .width = width, .height = height },
+            .is_active = true,
+        };
+    }
+
+    pub fn getBounds(self: Block) rl.Rectangle {
+        return self.bounds;
+    }
+};
+
+pub fn createBlockGrid(blocks: []Block, rows: usize, cols: usize, screen_width: f32, top_margin: f32, block_height: f32, block_spacing: f32) void {
+    const block_width = (screen_width - (block_spacing * (@as(f32, @floatFromInt(cols)) + 1))) / @as(f32, @floatFromInt(cols));
+    var i: usize = 0;
+    var y: f32 = top_margin;
+    var row: usize = 0;
+    while (row < rows) : (row += 1) {
+        var x: f32 = block_spacing;
+        var col: usize = 0;
+        while (col < cols) : (col += 1) {
+            blocks[i] = Block.init(x, y, block_width, block_height);
+            x += block_width + block_spacing;
+            i += 1;
+        }
+        y += block_height + block_spacing;
+    }
+}

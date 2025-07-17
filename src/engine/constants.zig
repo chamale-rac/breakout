@@ -6,7 +6,7 @@ const raylib = @import("raylib");
 
 pub const GameConfig = struct {
     // Window settings
-    pub const WINDOW_TITLE = "Breakout Game";
+    pub const WINDOW_TITLE = "F**cking Awesome Breakout Game";
     pub const WINDOW_WIDTH: i32 = 800;
     pub const WINDOW_HEIGHT: i32 = 600;
     pub const TARGET_FPS: i32 = 60;
@@ -32,4 +32,13 @@ pub const GameConfig = struct {
     // UI settings
     pub const FPS_TEXT_X: i32 = 10;
     pub const FPS_TEXT_Y: i32 = 40;
+};
+
+pub const InputAction = enum {
+    Left,
+    Right,
+    Pause,
+    Quit,
+    Resume,
+    Restart, // R key for restart
 };

@@ -7,6 +7,7 @@ const raylib = @import("raylib");
 const types = @import("types.zig");
 const constants = @import("constants.zig");
 const GameConfig = constants.GameConfig;
+const game_objects = @import("game_objects.zig");
 
 /// Rendering system that handles all drawing operations
 pub const Renderer = struct {
@@ -64,7 +65,7 @@ pub const Renderer = struct {
             .Paddle => GameConfig.PADDLE_COLOR,
             .Brick => raylib.Color.red,
             .PowerUp => raylib.Color.green,
-        };
+        }; // TODO: make this constants
         drawRectangle(rect, color);
     }
 
@@ -81,19 +82,27 @@ pub const Renderer = struct {
         const state_text = switch (state) {
             .Playing => "Playing",
             .Paused => "PAUSED",
-            .GameOver => "GAME OVER",
-            .Victory => "VICTORY!",
+            .GameOver => "GAME OVER!\nPress R to restart",
+            .Victory => "YOU WIN!\nPress R to restart",
         };
 
         const screen_center_x = @divTrunc(GameConfig.WINDOW_WIDTH, 2);
         const screen_center_y = @divTrunc(GameConfig.WINDOW_HEIGHT, 2);
 
-        drawText(state_text, screen_center_x - 50, screen_center_y, 32, raylib.Color.white);
+        drawText(state_text, screen_center_x - 100, screen_center_y, 32, raylib.Color.white);
     }
 
     /// Draw a border around the screen
     pub fn drawBorder() void {
         const border_rect = raylib.Rectangle{ .x = 0, .y = 0, .width = @as(f32, @floatFromInt(GameConfig.WINDOW_WIDTH)), .height = @as(f32, @floatFromInt(GameConfig.WINDOW_HEIGHT)) };
         raylib.drawRectangleLinesEx(border_rect, 2, raylib.Color.white);
+    }
+
+    pub fn drawBlocks(blocks: []const game_objects.Block) void {
+        for (blocks) |block| {
+            if (block.is_active) {
+                drawRectangle(block.bounds, raylib.Color.red);
+            }
+        }
     }
 };

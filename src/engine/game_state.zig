@@ -12,33 +12,55 @@ const InputSystem = input.InputSystem;
 const game_objects = @import("game_objects.zig");
 const Ball = game_objects.Ball;
 const Paddle = game_objects.Paddle;
+const Block = game_objects.Block;
+const createBlockGrid = game_objects.createBlockGrid;
+const PhysicsSystem = @import("physics.zig").PhysicsSystem;
+const std = @import("std");
 
 /// Main game state manager
 pub const GameStateManager = struct {
     current_state: GameState,
     frame_count: i32,
     score: i32,
-    lives: i32,
     ball: Ball,
     paddle: Paddle,
     input_system: InputSystem,
     screen_width: f32,
     screen_height: f32,
+    blocks: []Block,
+    allocator: std.mem.Allocator,
+    ball_ready: bool,
 
-    pub fn init() GameStateManager {
+    pub fn init(allocator: std.mem.Allocator) GameStateManager {
         const screen_width = @as(f32, @floatFromInt(GameConfig.WINDOW_WIDTH));
         const screen_height = @as(f32, @floatFromInt(GameConfig.WINDOW_HEIGHT));
-
+        const rows = 5;
+        const cols = 8;
+        const top_margin = 40.0;
+        const block_height = 20.0;
+        const block_spacing = 8.0;
+        const blocks = allocator.alloc(Block, rows * cols) catch @panic("Failed to allocate blocks");
+        createBlockGrid(blocks, rows, cols, screen_width, top_margin, block_height, block_spacing);
+        var ball = Ball.init(GameConfig.BALL_INITIAL_X, GameConfig.BALL_INITIAL_Y);
+        const paddle = Paddle.init(screen_width, screen_height);
+        // Place ball on top of paddle for initial state
+        ball.is_active = false;
+        ball.velocity = raylib.Vector2{ .x = 0, .y = 0 };
+        ball.bounds.x = paddle.bounds.x + (paddle.bounds.width - ball.bounds.width) / 2;
+        const gap: f32 = 2.0;
+        ball.bounds.y = paddle.bounds.y - ball.bounds.height - gap;
         return GameStateManager{
             .current_state = .Playing,
             .frame_count = 0,
             .score = 0,
-            .lives = 3,
-            .ball = Ball.init(GameConfig.BALL_INITIAL_X, GameConfig.BALL_INITIAL_Y),
-            .paddle = Paddle.init(screen_width, screen_height),
+            .ball = ball,
+            .paddle = paddle,
             .input_system = InputSystem.init(),
             .screen_width = screen_width,
             .screen_height = screen_height,
+            .blocks = blocks,
+            .allocator = allocator,
+            .ball_ready = true,
         };
     }
 
@@ -87,8 +109,8 @@ pub const GameStateManager = struct {
                 }
             },
             .GameOver, .Victory => {
-                // Handle restart (space key)
-                if (self.input_system.isActionJustPressed(.Pause)) {
+                // Handle restart (R key)
+                if (self.input_system.isActionJustPressed(.Restart)) {
                     self.restart();
                 }
             },
@@ -96,26 +118,52 @@ pub const GameStateManager = struct {
     }
 
     fn updatePlaying(self: *GameStateManager, delta_time: f32) void {
-        // Update game objects
-        self.ball.update(delta_time, self.screen_width, self.screen_height);
+        // Update paddle
         self.paddle.update(delta_time, self.screen_width, self.screen_height);
+
+        if (self.ball_ready) {
+            // Ball follows paddle
+            self.ball.bounds.x = self.paddle.bounds.x + (self.paddle.bounds.width - self.ball.bounds.width) / 2;
+            self.ball.bounds.y = self.paddle.bounds.y - self.ball.bounds.height;
+            // Launch ball on up arrow
+            if (raylib.isKeyPressed(raylib.KeyboardKey.up)) {
+                self.ball.velocity = raylib.Vector2{ .x = GameConfig.BALL_SPEED_X, .y = -@abs(GameConfig.BALL_SPEED_Y) };
+                self.ball.is_active = true;
+                self.ball_ready = false;
+            }
+        } else {
+            // Update ball physics
+            self.ball.update(delta_time, self.screen_width, self.screen_height);
+            // Check for game over condition only if ball is in play
+            if (!self.ball.is_active) {
+                if (self.current_state != .GameOver) {
+                    self.current_state = .GameOver;
+                    std.debug.print("Game Over\n", .{});
+                }
+                return;
+            }
+        }
 
         // Handle ball-paddle collision
         self.ball.handlePaddleCollision(&self.paddle);
 
-        // Check for game over condition
-        if (!self.ball.is_active) {
-            self.lives -= 1;
-            if (self.lives <= 0) {
-                self.current_state = .GameOver;
-            } else {
-                self.resetBall();
+        // Handle ball-block collision
+        var blocks_remaining: usize = 0;
+        for (self.blocks) |*block| {
+            if (block.is_active) {
+                blocks_remaining += 1;
+                if (PhysicsSystem.checkCollision(self.ball.getBounds(), block.getBounds())) {
+                    block.is_active = false;
+                    self.ball.velocity.y *= -1;
+                    self.addScore(100);
+                }
             }
         }
-
-        // Check for victory condition (placeholder)
-        if (self.score >= 1000) {
-            self.current_state = .Victory;
+        if (blocks_remaining == 0) {
+            if (self.current_state != .Victory) {
+                self.current_state = .Victory;
+                std.debug.print("You Win!\n", .{});
+            }
         }
     }
 
@@ -135,22 +183,35 @@ pub const GameStateManager = struct {
     }
 
     fn resetBall(self: *GameStateManager) void {
-        self.ball.reset(GameConfig.BALL_INITIAL_X, GameConfig.BALL_INITIAL_Y);
+        // Position ball on top of paddle and set ready
+        const gap: f32 = 2.0;
+        self.ball_ready = true;
+        self.ball.is_active = false;
+        self.ball.velocity = raylib.Vector2{ .x = 0, .y = 0 };
+        self.ball.bounds.x = self.paddle.bounds.x + (self.paddle.bounds.width - self.ball.bounds.width) / 2;
+        self.ball.bounds.y = self.paddle.bounds.y - self.ball.bounds.height - gap;
     }
 
     fn restart(self: *GameStateManager) void {
         self.current_state = .Playing;
         self.frame_count = 0;
         self.score = 0;
-        self.lives = 3;
-        self.resetBall();
-
-        // Reset paddle position
+        // Reset paddle position first
         const paddle_width = GameConfig.BALL_SIZE * GameConfig.PADDLE_WIDTH_MULTIPLIER;
         const paddle_x = (self.screen_width / 2) - (paddle_width / 2);
         const paddle_y = self.screen_height - GameConfig.PADDLE_BOTTOM_MARGIN - GameConfig.PADDLE_HEIGHT;
         self.paddle.bounds.x = paddle_x;
         self.paddle.bounds.y = paddle_y;
+        // Now reset the ball on top of the paddle
+        self.resetBall();
+        self.ball_ready = true;
+        // Reset blocks
+        const rows = 5;
+        const cols = 8;
+        const top_margin = 40.0;
+        const block_height = 20.0;
+        const block_spacing = 8.0;
+        createBlockGrid(self.blocks, rows, cols, self.screen_width, top_margin, block_height, block_spacing);
     }
 
     pub fn addScore(self: *GameStateManager, points: i32) void {
@@ -163,10 +224,6 @@ pub const GameStateManager = struct {
 
     pub fn getScore(self: GameStateManager) i32 {
         return self.score;
-    }
-
-    pub fn getLives(self: GameStateManager) i32 {
-        return self.lives;
     }
 
     pub fn getFrameCount(self: GameStateManager) i32 {

@@ -27,7 +27,7 @@ pub const GameEngine = struct {
         Renderer.init();
 
         return GameEngine{
-            .game_state = GameStateManager.init(),
+            .game_state = GameStateManager.init(std.heap.c_allocator),
             .renderer = Renderer{},
             .is_running = true,
         };
@@ -51,8 +51,8 @@ pub const GameEngine = struct {
         // Update game state
         self.game_state.update();
 
-        // Check if game should continue running
-        if (!self.game_state.isRunning()) {
+        // Only exit if the user closes the window
+        if (raylib.windowShouldClose()) {
             self.is_running = false;
         }
     }
@@ -85,6 +85,8 @@ pub const GameEngine = struct {
         }
 
         Renderer.drawGameObject(paddle.getBounds(), .Paddle);
+        // Draw blocks
+        Renderer.drawBlocks(self.game_state.blocks);
     }
 
     /// Render UI elements
@@ -94,14 +96,10 @@ pub const GameEngine = struct {
 
         // Draw score and lives
         const score = self.game_state.getScore();
-        const lives = self.game_state.getLives();
         const frame_count = self.game_state.getFrameCount();
 
         // Draw score
         Renderer.drawTextFmt("Score: {}", .{score}, 10, 10, 20, raylib.Color.white);
-
-        // Draw lives
-        Renderer.drawTextFmt("Lives: {}", .{lives}, 10, 70, 20, raylib.Color.white);
 
         // Draw debug info in debug mode
         if (self.isDebugMode()) {
@@ -124,11 +122,9 @@ pub const GameEngine = struct {
             },
             .GameOver => {
                 Renderer.drawGameState(.GameOver);
-                Renderer.drawText("Press SPACE to restart", 250, 350, 20, raylib.Color.white);
             },
             .Victory => {
                 Renderer.drawGameState(.Victory);
-                Renderer.drawText("Press SPACE to restart", 250, 350, 20, raylib.Color.white);
             },
         }
     }

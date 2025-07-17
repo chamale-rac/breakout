@@ -3,7 +3,7 @@ const engine = @import("engine");
 const GameEngine = engine.GameEngine;
 
 /// Main entry point for the Breakout game
-/// This file is now much cleaner and delegates all game logic
+/// Cleaner and delegates all game logic
 /// to the modular engine architecture.
 pub fn main() !void {
     // Initialize the game engine

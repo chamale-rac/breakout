@@ -188,6 +188,18 @@ The architecture is designed to easily support:
 
 This modular approach ensures the codebase remains maintainable and extensible as the game grows in complexity.
 
+# Requirements acomplishment
+
+- [x] El jugador debe de manejar un “paddle” que se puede mover solo de izquierda a derecha en la pantalla.
+- [x] Se debe controlar con el teclado.
+- [x] Utilicen movimiento time-based (delta time).
+- [x] Debe haber un rectángulo “pelota” que continuamente esté moviéndose en la pantalla.
+- [x] Cuando la pelota toque la “paddle” debe invertir su movimiento en X y aumentar su velocidad. (Nota: invertido en Y, es lo mismo)
+- [x] Cuando la pelota toque la pared de arriba o de los lados debe invertir su movimiento. 
+- [ ] Si toca la pared de abajo, el juego debe cerrarse y se debe mostrar un mensaje en la terminal que diga “Game Over”
+- [ ] En la pantalla, coloquen algunos rectángulos para representar los “bloques”. Si la pelota toca un bloque eliminen el bloque.
+- [ ] Si se eliminan todos los bloques, muestren un mensaje que diga algo como “You Win!” (puede ser en consola)
+
 # References
 
 - [https://www.raylib.com/cheatsheet/raymath_cheatsheet.html](https://www.raylib.com/cheatsheet/raymath_cheatsheet.html)
