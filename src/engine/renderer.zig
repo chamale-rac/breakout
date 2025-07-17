@@ -89,7 +89,7 @@ pub const Renderer = struct {
         const screen_center_x = @divTrunc(GameConfig.WINDOW_WIDTH, 2);
         const screen_center_y = @divTrunc(GameConfig.WINDOW_HEIGHT, 2);
 
-        drawText(state_text, screen_center_x - 100, screen_center_y, 32, raylib.Color.white);
+        drawText(state_text, screen_center_x - 180, screen_center_y, 32, raylib.Color.white);
     }
 
     /// Draw a border around the screen

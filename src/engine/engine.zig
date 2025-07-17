@@ -78,15 +78,21 @@ pub const GameEngine = struct {
     fn renderGameObjects(self: *GameEngine) void {
         const ball = self.game_state.getBall();
         const paddle = self.game_state.getPaddle();
-
-        // Only render ball if it's active
-        if (ball.is_active) {
-            Renderer.drawGameObject(ball.getBounds(), .Ball);
-        }
-
+        // Always render the ball, even if inactive
+        Renderer.drawGameObject(ball.getBounds(), .Ball);
         Renderer.drawGameObject(paddle.getBounds(), .Paddle);
         // Draw blocks
         Renderer.drawBlocks(self.game_state.blocks);
+
+        // Show launch instructions if ball is ready
+        if (self.game_state.ball_ready) {
+            const screen_center_x = @divTrunc(GameConfig.WINDOW_WIDTH, 2);
+            const text = "Press Up Arrow to start playing and Space to Pause";
+            // Center the text horizontally, place it above the paddle
+            const text_x = screen_center_x - 270; // Adjust as needed for centering
+            const text_y = @as(i32, @intFromFloat(paddle.bounds.y)) - 80;
+            Renderer.drawText(text, text_x, text_y, 20, raylib.Color.white);
+        }
     }
 
     /// Render UI elements

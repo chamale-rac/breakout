@@ -34,8 +34,8 @@ pub const GameStateManager = struct {
     pub fn init(allocator: std.mem.Allocator) GameStateManager {
         const screen_width = @as(f32, @floatFromInt(GameConfig.WINDOW_WIDTH));
         const screen_height = @as(f32, @floatFromInt(GameConfig.WINDOW_HEIGHT));
-        const rows = 5;
-        const cols = 8;
+        const rows = 1;
+        const cols = 2;
         const top_margin = 40.0;
         const block_height = 20.0;
         const block_spacing = 8.0;
@@ -206,8 +206,8 @@ pub const GameStateManager = struct {
         self.resetBall();
         self.ball_ready = true;
         // Reset blocks
-        const rows = 5;
-        const cols = 8;
+        const rows = 1;
+        const cols = 2;
         const top_margin = 40.0;
         const block_height = 20.0;
         const block_spacing = 8.0;
