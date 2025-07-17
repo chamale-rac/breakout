@@ -36,6 +36,11 @@ breakout/
   zig-out/
 ```
 
+## How to Build
+
+- Run `zig build` in the project root.
+- The compiled executables will be found in the `zig-out` folder.
+
 ## Controls
 
 - **Left Arrow / Right Arrow:** Move the paddle left/right
